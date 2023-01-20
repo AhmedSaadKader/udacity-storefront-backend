@@ -19,3 +19,4 @@ app.get('/', function (req, res) {
 app.listen(port, function () {
     console.log(`starting app on: ${address}`);
 });
+exports.default = app;

@@ -65,6 +65,8 @@ Before submitting your project, spin it up and test each endpoint. If each one r
 - run npm i to install dependencies
 - npm i dotenv
 - remove bodyparser from server.ts and dependencies because deprecated and replace with express.json()
+- npm i --save-dev nodemon
+- script start: "nodemon src/server.ts"
 
 ### configure dependencies
 
@@ -136,6 +138,9 @@ Before submitting your project, spin it up and test each endpoint. If each one r
 
 #### configure jasmine
 
+- script "jasmine": "jasmine"
+- "test": "npm run build && npm run jasmine"
+
 - spec\support\jasmine.json:
 
 ```json
@@ -168,4 +173,20 @@ Before submitting your project, spin it up and test each endpoint. If each one r
       },
       customProcessors: [CustomProcessor],
   }));
+  ```
+
+##### Create First test for endpoint
+
+- npm i supertest @types/supertest --save-dev
+- src/tests/serverSpec.ts:
+  ```typescript
+  import request from 'supertest';
+  import app from '../index';
+  describe("GET API '/'", () => {
+    it('should return Hello, world!', async () => {
+      const res = await request(app).get('/').send('Hello, world!');
+      expect(res.statusCode).toBe(200);
+      expect(res.text).toBe('Hello, world!');
+    });
+  });
   ```
