@@ -190,3 +190,45 @@ Before submitting your project, spin it up and test each endpoint. If each one r
     });
   });
   ```
+
+### Project Structure
+
+- create directories: routes, controllers, models, middleware
+
+### Connect to database
+
+- create .env database variables
+- create database.ts in src folder
+- use pool to create object
+- create database.json file:
+
+```json
+{
+  "dev": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "item_store",
+    "user": "postgres",
+    "password": "a7aa7a"
+  },
+  "test": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "",
+    "user": "",
+    "password": ""
+  }
+}
+```
+
+- add item.ts to models folder
+- add item class to item.ts and add CRUD functions to it
+
+#### db-migrate
+
+- install db-migrate global and local db-migrate and db-migrate-pg
+- script `"migrate": "db-migrate --env test up && db-migrate up",`
+
+#### testing database model
+
+- script: `"test": "set ENV=test&& db-migrate db:create item_store_test && db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop item_store_test",`
