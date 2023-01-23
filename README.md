@@ -65,6 +65,8 @@ Before submitting your project, spin it up and test each endpoint. If each one r
 - run npm i to install dependencies
 - npm i dotenv
 - remove bodyparser from server.ts and dependencies because deprecated and replace with express.json()
+- npm i cors
+- app.use(cors())
 - npm i --save-dev nodemon
 - script start: "nodemon src/server.ts"
 
@@ -227,8 +229,19 @@ Before submitting your project, spin it up and test each endpoint. If each one r
 #### db-migrate
 
 - install db-migrate global and local db-migrate and db-migrate-pg
+- in terminal: `db-migrate create items --sql-file`
 - script `"migrate": "db-migrate --env test up && db-migrate up",`
+- in the migrations/sql/up-file add the create items table sql query
 
 #### testing database model
 
-- script: `"test": "set ENV=test&& db-migrate db:create item_store_test && db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop item_store_test",`
+- script: `"test": "set ENV=test&& db-migrate db:drop item_store_test && db-migrate db:create item_store_test && db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop item_store_test",`
+- update itemSpec.ts to test the presence and functionality of all CRUD methods
+
+### Create REST APIs
+
+- in the routes folder create itemRoutes.ts file
+- in the controller folder create itemController.ts file
+- add all REST routes to the itemRoutes.ts file
+- add REST functions to the itemControllers.ts file
+- import itemRouter in server.ts and use with proper route

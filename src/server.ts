@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import itemRouter from './routes/itemRoutes';
 
 dotenv.config();
 
@@ -13,10 +15,13 @@ app.use(
     extended: true
   })
 );
+app.use(cors());
 
 app.get('/', function (req: Request, res: Response) {
   res.send('Hello World!');
 });
+
+app.use('/items', itemRouter);
 
 app.listen(port, function () {
   console.log(`starting app on: ${address}`);

@@ -1,7 +1,7 @@
 import client from '../database';
 
 export type Item = {
-  id: number;
+  id?: number; //id is not provided when creating the item that is why it is optional
   name: string;
   price: number;
 };
@@ -39,6 +39,18 @@ export class ItemStore {
       return result.rows[0];
     } catch (err) {
       throw new Error(`Could not create item ${name}. Error: ${err}`);
+    }
+  }
+  async delete(id: number): Promise<undefined> {
+    try {
+      const conn = await client.connect();
+      const sql = 'DELETE FROM items WHERE id=($1)';
+      const result = await conn.query(sql, [id]);
+      const item = result.rows[0];
+      conn.release();
+      return item;
+    } catch (err) {
+      throw new Error(`Could not delete item ${id}. Error: ${err}`);
     }
   }
 }

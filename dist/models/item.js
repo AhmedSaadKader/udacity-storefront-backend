@@ -43,5 +43,18 @@ class ItemStore {
             throw new Error(`Could not create item ${name}. Error: ${err}`);
         }
     }
+    async delete(id) {
+        try {
+            const conn = await database_1.default.connect();
+            const sql = 'DELETE FROM items WHERE id=($1)';
+            const result = await conn.query(sql, [id]);
+            const item = result.rows[0];
+            conn.release();
+            return item;
+        }
+        catch (err) {
+            throw new Error(`Could not delete item ${id}. Error: ${err}`);
+        }
+    }
 }
 exports.ItemStore = ItemStore;
