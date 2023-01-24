@@ -51,25 +51,25 @@ class UserModel {
     async authenticate(username, password) {
         try {
             const conn = await database_1.default.connect();
-            const sql = 'SELECT password_digest FROM users WHERE username=($1)';
+            const sql = 'SELECT * FROM users WHERE username=($1)';
             const result = await conn.query(sql, [username]);
-            console.log(password + BCRYPT_PASSWORD);
             if (result.rows.length) {
                 const user = result.rows[0];
                 console.log(user);
-                if (bcrypt_1.default.compareSync(password + BCRYPT_PASSWORD, password)) {
+                if (bcrypt_1.default.compareSync(password + BCRYPT_PASSWORD, user.password_digest)) {
+                    console.log(user);
                     return user;
                 }
                 else {
-                    throw new Error('incorrect password');
+                    return 'password is incorrect';
                 }
             }
             else {
-                throw new Error('user does not exist');
+                return 'username unavailable';
             }
         }
         catch (error) {
-            throw new Error(`Error: ${error}`);
+            throw new Error(error);
         }
     }
     async delete(id) {

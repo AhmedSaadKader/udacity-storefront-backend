@@ -26,6 +26,19 @@ describe('UserModel', () => {
         });
         expect(result.username).toEqual('test_user');
     });
+    it('authenticate method should return error if user does not exist', async () => {
+        const result = await user.authenticate('no_user', 'test_password_100');
+        expect(result).toBe('username unavailable');
+    });
+    it('authenticate method should return error if password is wrong', async () => {
+        const result = await user.authenticate('test_user', 'wrong_password');
+        expect(result).toBe('password is incorrect');
+    });
+    it('authenticate method should return user if credentials are right', async () => {
+        const result = await user.authenticate('test_user', 'test_password_100');
+        console.log(result);
+        expect(result.username).toEqual('test_user');
+    });
     it('show method should show specific item', async () => {
         const result = await user.show(1);
         expect(result.username).toEqual('test_user');
