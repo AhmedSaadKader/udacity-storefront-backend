@@ -21,7 +21,7 @@ app.get('/', function (req: Request, res: Response) {
   res.send('Hello World!');
 });
 
-app.use('/items', itemRouter);
+app.use('/api/v1/items', itemRouter);
 
 app.listen(port, function () {
   console.log(`starting app on: ${address}`);

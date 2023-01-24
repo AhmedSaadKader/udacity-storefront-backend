@@ -3,7 +3,8 @@ import {
   createItem,
   deleteItem,
   getAllItems,
-  getItem
+  getItem,
+  updateItem
 } from '../controllers/itemController';
 
 const router = Router();
@@ -15,5 +16,7 @@ router.post('/', createItem);
 router.get('/:id', getItem);
 
 router.delete('/:id', deleteItem);
+
+router.patch('/:id', updateItem);
 
 export default router;

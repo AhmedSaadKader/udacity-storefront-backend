@@ -44,3 +44,15 @@ export const deleteItem = async (
     res.json(error);
   }
 };
+
+export const updateItem = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    res.send('update item');
+  } catch (error) {
+    res.status(400);
+    res.json(error);
+  }
+};

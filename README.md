@@ -245,3 +245,33 @@ Before submitting your project, spin it up and test each endpoint. If each one r
 - add all REST routes to the itemRoutes.ts file
 - add REST functions to the itemControllers.ts file
 - import itemRouter in server.ts and use with proper route
+
+### Authorization
+
+#### User model
+
+- db-migrate create users-table --sql-file
+- in migrations sql user-table up file:
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100),
+    password_digest VARCHAR
+);
+```
+
+- create user.ts file in models folder
+- create user type and class and export
+- create CRUD methods in user class
+
+##### Testing user model
+
+- in tests/userSpec.ts test presence and functionality of users CRUD methods.
+
+#### hashing password using bcrypt
+
+- npm i bcrypt
+- import bcrypt into user model
+- create bcrypt necessary environment variables
+- use the hash method inside the create method and save the result to password_digest column on user table
