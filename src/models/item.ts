@@ -1,7 +1,7 @@
 import client from '../database';
 
 export type Item = {
-  id?: number; //id is not provided when creating the item that is why it is optional
+  id?: number | string; //id is not provided when creating the item that is why it is optional
   name: string;
   price: number;
 };
@@ -18,7 +18,7 @@ export class ItemStore {
       throw new Error(`Could not find items. Error: ${err}`);
     }
   }
-  async show(id: number): Promise<Item> {
+  async show(id: number | string): Promise<Item> {
     try {
       const conn = await client.connect();
       const sql = 'SELECT * FROM items WHERE id=($1)';
@@ -41,7 +41,7 @@ export class ItemStore {
       throw new Error(`Could not create item ${name}. Error: ${err}`);
     }
   }
-  async delete(id: number): Promise<undefined> {
+  async delete(id: number | string): Promise<undefined> {
     try {
       const conn = await client.connect();
       const sql = 'DELETE FROM items WHERE id=($1)';

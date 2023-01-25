@@ -7,7 +7,7 @@ dotenv.config();
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 
 export type User = {
-  id?: number;
+  id?: number | string;
   username: string;
   password: string;
 };
@@ -24,7 +24,7 @@ export class UserModel {
       throw new Error(`Could not find users. Error: ${err}`);
     }
   }
-  async show(id: number): Promise<User> {
+  async show(id: number | string): Promise<User> {
     try {
       const conn = await client.connect();
       const sql = 'SELECT * FROM users WHERE id=($1)';
@@ -78,7 +78,7 @@ export class UserModel {
       throw new Error(error as string);
     }
   }
-  async delete(id: number): Promise<undefined> {
+  async delete(id: number | string): Promise<undefined> {
     try {
       const conn = await client.connect();
       const sql = 'DELETE FROM users WHERE id=($1)';

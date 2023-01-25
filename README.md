@@ -238,15 +238,16 @@ Before submitting your project, spin it up and test each endpoint. If each one r
 - script: `"test": "set ENV=test&& db-migrate db:drop item_store_test && db-migrate db:create item_store_test && db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop item_store_test",`
 - update itemSpec.ts to test the presence and functionality of all CRUD methods
 
-### Create REST APIs
+### Create REST APIs for items model
 
 - in the routes folder create itemRoutes.ts file
 - in the controller folder create itemController.ts file
 - add all REST routes to the itemRoutes.ts file
 - add REST functions to the itemControllers.ts file
 - import itemRouter in server.ts and use with proper route
+- add model methods to corresponding controller functions and test with postman
 
-### Authorization
+### Users and Authorization
 
 #### User model
 
@@ -265,6 +266,10 @@ CREATE TABLE users (
 - create user type and class and export
 - create CRUD methods in user class
 
+#### User routes
+
+#### User controller
+
 ##### Testing user model
 
 - in tests/userSpec.ts test presence and functionality of users CRUD methods.
@@ -275,3 +280,9 @@ CREATE TABLE users (
 - import bcrypt into user model
 - create bcrypt necessary environment variables
 - use the hash method inside the create method and save the result to password_digest column on user table
+
+#### JWT
+
+- npm i jwt
+- npm i @types/jwt --save-dev
+- add jwt.sign to create method in user controller

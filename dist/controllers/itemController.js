@@ -1,9 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateItem = exports.deleteItem = exports.getItem = exports.createItem = exports.getAllItems = void 0;
+const item_1 = require("../models/item");
+const itemStore = new item_1.ItemStore();
 const getAllItems = async (req, res) => {
     try {
-        res.send('get all items');
+        const allItems = await itemStore.index();
+        res.json(allItems);
     }
     catch (error) {
         res.status(400);
@@ -12,8 +15,10 @@ const getAllItems = async (req, res) => {
 };
 exports.getAllItems = getAllItems;
 const createItem = async (req, res) => {
+    const { name, price } = req.body;
     try {
-        res.send('create new item');
+        const newItem = await itemStore.create({ name, price });
+        res.json(newItem);
     }
     catch (error) {
         res.status(400);
@@ -23,7 +28,9 @@ const createItem = async (req, res) => {
 exports.createItem = createItem;
 const getItem = async (req, res) => {
     try {
-        res.send('get one item');
+        const item = await itemStore.show(req.params.id);
+        console.log(item);
+        res.json(item);
     }
     catch (error) {
         res.status(400);
@@ -33,7 +40,8 @@ const getItem = async (req, res) => {
 exports.getItem = getItem;
 const deleteItem = async (req, res) => {
     try {
-        res.send('delete item');
+        const item = await itemStore.delete(req.params.id);
+        res.json(item);
     }
     catch (error) {
         res.status(400);

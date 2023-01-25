@@ -55,7 +55,6 @@ class UserModel {
             const result = await conn.query(sql, [username]);
             if (result.rows.length) {
                 const user = result.rows[0];
-                console.log(user);
                 if (bcrypt_1.default.compareSync(password + BCRYPT_PASSWORD, user.password_digest)) {
                     console.log(user);
                     return user;
