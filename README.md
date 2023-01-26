@@ -291,4 +291,8 @@ CREATE TABLE users (
 - npm i jwt
 - npm i @types/jwt --save-dev
 - add jwt.sign to create method in user controller and return token
--
+- create auth.ts file in middleware folder to handle authorization
+
+#### user endpoint testing
+
+- in serverSpec.ts add testing for login and register and allusers endpoint response
