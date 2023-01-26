@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateItem = exports.deleteItem = exports.getItem = exports.createItem = exports.getAllItems = void 0;
-const item_1 = require("../models/item");
-const itemStore = new item_1.ItemStore();
+const Item_1 = require("../models/Item");
+const itemStore = new Item_1.ItemStore();
 const getAllItems = async (req, res) => {
     try {
         const allItems = await itemStore.index();

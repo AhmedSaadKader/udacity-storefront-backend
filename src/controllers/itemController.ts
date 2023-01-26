@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ItemStore } from '../models/item';
+import { ItemStore } from '../models/Item';
 
 const itemStore = new ItemStore();
 

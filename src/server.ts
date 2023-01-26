@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import itemRouter from './routes/itemRoutes';
+import userRouter from './routes/userRoutes';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.get('/', function (req: Request, res: Response) {
   res.send('Hello World!');
 });
 
+app.use('/api/v1/users', userRouter);
 app.use('/api/v1/items', itemRouter);
 
 app.listen(port, function () {

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const item_1 = require("../models/item");
-const store = new item_1.ItemStore();
+const Item_1 = require("../models/Item");
+const store = new Item_1.ItemStore();
 describe('ItemStore Model', () => {
     it('should have an index method', () => {
         expect(store.index).toBeDefined();
@@ -15,13 +15,13 @@ describe('ItemStore Model', () => {
     it('should have a delete method', () => {
         expect(store.delete).toBeDefined();
     });
-    it('index method should return list of items', async () => {
-        const result = await store.index();
-        expect(result).toEqual([]);
-    });
     it('create method should create a new item', async () => {
         const result = await store.create({ name: 'test_item', price: 100 });
         expect(result).toEqual({ id: 1, name: 'test_item', price: 100 });
+    });
+    it('index method should return list of items', async () => {
+        const result = await store.index();
+        expect(result.length).toBeGreaterThanOrEqual(1);
     });
     it('show method should show specific item', async () => {
         const result = await store.show(1);

@@ -268,7 +268,12 @@ CREATE TABLE users (
 
 #### User routes
 
+- create all REST routes in userRoutes.ts file
+- add all userController functions to corresponding routes
+
 #### User controller
+
+- create all REST functions and use corresponding model methods to userController.ts file
 
 ##### Testing user model
 
@@ -285,4 +290,5 @@ CREATE TABLE users (
 
 - npm i jwt
 - npm i @types/jwt --save-dev
-- add jwt.sign to create method in user controller
+- add jwt.sign to create method in user controller and return token
+-

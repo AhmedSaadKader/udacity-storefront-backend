@@ -1,10 +1,15 @@
-import { create } from 'domain';
-import { Request, Response } from 'express';
-import { UserModel } from '../models/user';
+import { NextFunction, Request, Response } from 'express';
+import { UserModel, User } from '../models/User';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const user = new UserModel();
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (
+  req: Request,
+  res: Response
+): Promise<UserModel | void> => {
   try {
     const allUsers = await user.index();
     res.json(allUsers);
@@ -14,27 +19,44 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-export const createUser = async (
+export const registerUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   const { username, password } = req.body;
   try {
     const newUser = await user.create({ username, password });
-    res.json(newUser);
+    const token = user.createJWT(newUser.id as string, newUser.username);
+    res.json({ token, username: newUser.username, id: newUser.id });
   } catch (error) {
     res.status(400);
     res.json(error);
   }
 };
 
-export const getUser = async (req: Request, res: Response): Promise<void> => {
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    throw new Error('Please provide all values');
+  }
   try {
-    const createdUser = await user.show(req.params.id);
-    res.json(createdUser);
+    const createdUser = await user.authenticateUser(username, password);
+    const token = user.createJWT(
+      (createdUser as User).id as string,
+      (createdUser as User).username
+    );
+    res.json({
+      token,
+      username: (createdUser as User).username,
+      id: (createdUser as User).id
+    });
   } catch (error) {
     res.status(400);
-    res.json(error);
+    next(error);
   }
 };
 

@@ -1,6 +1,7 @@
 import client from '../database';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -13,6 +14,23 @@ export type User = {
 };
 
 export class UserModel {
+  hashPassword(password: string) {
+    const hash = bcrypt.hashSync(
+      password + BCRYPT_PASSWORD,
+      parseInt(SALT_ROUNDS as string)
+    );
+    return hash;
+  }
+  createJWT(id: number | string, username: string) {
+    return jwt.sign({ id, username }, process.env.TOKEN_SECRET as string);
+  }
+  comparePassword(password: string, password_digest: string) {
+    const isMatch = bcrypt.compareSync(
+      password + BCRYPT_PASSWORD,
+      password_digest
+    );
+    return isMatch;
+  }
   async index(): Promise<User[]> {
     try {
       const conn = await client.connect();
@@ -24,36 +42,21 @@ export class UserModel {
       throw new Error(`Could not find users. Error: ${err}`);
     }
   }
-  async show(id: number | string): Promise<User> {
-    try {
-      const conn = await client.connect();
-      const sql = 'SELECT * FROM users WHERE id=($1)';
-      const result = await conn.query(sql, [id]);
-      conn.release();
-      return result.rows[0];
-    } catch (err) {
-      throw new Error(`Could not find user ${id}. Error: ${err}`);
-    }
-  }
   async create(user: User): Promise<User> {
     const { username, password } = user;
     try {
       const conn = await client.connect();
       const sql =
         'INSERT INTO users (username, password_digest) VALUES ($1, $2) RETURNING *';
-      const hash = bcrypt.hashSync(
-        password + BCRYPT_PASSWORD,
-        parseInt(SALT_ROUNDS as string)
-      );
-
-      const result = await conn.query(sql, [username, hash]);
+      const password_digest = this.hashPassword(password);
+      const result = await conn.query(sql, [username, password_digest]);
       conn.release();
       return result.rows[0];
     } catch (err) {
       throw new Error(`Could not create user ${username}. Error: ${err}`);
     }
   }
-  async authenticate(
+  async authenticateUser(
     username: string,
     password: string
   ): Promise<User | string> {
@@ -61,21 +64,17 @@ export class UserModel {
       const conn = await client.connect();
       const sql = 'SELECT * FROM users WHERE username=($1)';
       const result = await conn.query(sql, [username]);
-      if (result.rows.length) {
-        const user = result.rows[0];
-        if (
-          bcrypt.compareSync(password + BCRYPT_PASSWORD, user.password_digest)
-        ) {
-          console.log(user);
-          return user;
-        } else {
-          return 'password is incorrect';
-        }
-      } else {
+      conn.release();
+      if (!result.rows.length) {
         return 'username unavailable';
       }
-    } catch (error) {
-      throw new Error(error as string);
+      const user = result.rows[0];
+      if (!this.comparePassword(password, user.password_digest)) {
+        return 'password is incorrect';
+      }
+      return user;
+    } catch (err) {
+      throw new Error(`Could not find user ${username}. Error: ${err}`);
     }
   }
   async delete(id: number | string): Promise<undefined> {

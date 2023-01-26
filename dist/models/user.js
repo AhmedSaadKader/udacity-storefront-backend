@@ -7,9 +7,21 @@ exports.UserModel = void 0;
 const database_1 = __importDefault(require("../database"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 dotenv_1.default.config();
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 class UserModel {
+    hashPassword(password) {
+        const hash = bcrypt_1.default.hashSync(password + BCRYPT_PASSWORD, parseInt(SALT_ROUNDS));
+        return hash;
+    }
+    createJWT(id, username) {
+        return jsonwebtoken_1.default.sign({ id, username }, process.env.TOKEN_SECRET);
+    }
+    comparePassword(password, password_digest) {
+        const isMatch = bcrypt_1.default.compareSync(password + BCRYPT_PASSWORD, password_digest);
+        return isMatch;
+    }
     async index() {
         try {
             const conn = await database_1.default.connect();
@@ -22,25 +34,13 @@ class UserModel {
             throw new Error(`Could not find users. Error: ${err}`);
         }
     }
-    async show(id) {
-        try {
-            const conn = await database_1.default.connect();
-            const sql = 'SELECT * FROM users WHERE id=($1)';
-            const result = await conn.query(sql, [id]);
-            conn.release();
-            return result.rows[0];
-        }
-        catch (err) {
-            throw new Error(`Could not find user ${id}. Error: ${err}`);
-        }
-    }
     async create(user) {
         const { username, password } = user;
         try {
             const conn = await database_1.default.connect();
             const sql = 'INSERT INTO users (username, password_digest) VALUES ($1, $2) RETURNING *';
-            const hash = bcrypt_1.default.hashSync(password + BCRYPT_PASSWORD, parseInt(SALT_ROUNDS));
-            const result = await conn.query(sql, [username, hash]);
+            const password_digest = this.hashPassword(password);
+            const result = await conn.query(sql, [username, password_digest]);
             conn.release();
             return result.rows[0];
         }
@@ -48,27 +48,23 @@ class UserModel {
             throw new Error(`Could not create user ${username}. Error: ${err}`);
         }
     }
-    async authenticate(username, password) {
+    async authenticateUser(username, password) {
         try {
             const conn = await database_1.default.connect();
             const sql = 'SELECT * FROM users WHERE username=($1)';
             const result = await conn.query(sql, [username]);
-            if (result.rows.length) {
-                const user = result.rows[0];
-                if (bcrypt_1.default.compareSync(password + BCRYPT_PASSWORD, user.password_digest)) {
-                    console.log(user);
-                    return user;
-                }
-                else {
-                    return 'password is incorrect';
-                }
-            }
-            else {
+            conn.release();
+            if (!result.rows.length) {
                 return 'username unavailable';
             }
+            const user = result.rows[0];
+            if (!this.comparePassword(password, user.password_digest)) {
+                return 'password is incorrect';
+            }
+            return user;
         }
-        catch (error) {
-            throw new Error(error);
+        catch (err) {
+            throw new Error(`Could not find user ${username}. Error: ${err}`);
         }
     }
     async delete(id) {

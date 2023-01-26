@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const user_1 = require("../models/user");
-const user = new user_1.UserModel();
+const User_1 = require("../models/User");
+const user = new User_1.UserModel();
 describe('UserModel', () => {
     it('should have an index method', () => {
         expect(user.index).toBeDefined();
     });
-    it('should have a show method', () => {
-        expect(user.show).toBeDefined();
+    it('should have a authenticateUser method', () => {
+        expect(user.authenticateUser).toBeDefined();
     });
     it('should have a create method', () => {
         expect(user.create).toBeDefined();
@@ -15,35 +15,30 @@ describe('UserModel', () => {
     it('should have a delete method', () => {
         expect(user.delete).toBeDefined();
     });
-    it('index method should return list of items', async () => {
-        const result = await user.index();
-        expect(result).toEqual([]);
-    });
-    it('create method should create a new item', async () => {
+    it('create method should create a new user', async () => {
         const result = await user.create({
             username: 'test_user',
             password: 'test_password_100'
         });
         expect(result.username).toEqual('test_user');
     });
-    it('authenticate method should return error if user does not exist', async () => {
-        const result = await user.authenticate('no_user', 'test_password_100');
+    it('index method should return list of users', async () => {
+        const result = await user.index();
+        expect(result.length).toBeGreaterThanOrEqual(1);
+    });
+    it('authenticateUser method should return error if user does not exist', async () => {
+        const result = await user.authenticateUser('no_user', 'test_password_100');
         expect(result).toBe('username unavailable');
     });
-    it('authenticate method should return error if password is wrong', async () => {
-        const result = await user.authenticate('test_user', 'wrong_password');
+    it('authenticateUser method should return error if password is wrong', async () => {
+        const result = await user.authenticateUser('test_user', 'wrong_password');
         expect(result).toBe('password is incorrect');
     });
-    it('authenticate method should return user if credentials are right', async () => {
-        const result = await user.authenticate('test_user', 'test_password_100');
-        console.log(result);
+    it('authenticateUser method should return user if credentials are right', async () => {
+        const result = await user.authenticateUser('test_user', 'test_password_100');
         expect(result.username).toEqual('test_user');
     });
-    it('show method should show specific item', async () => {
-        const result = await user.show(1);
-        expect(result.username).toEqual('test_user');
-    });
-    it('delete method should delete specific item', async () => {
+    it('delete method should delete specific user', async () => {
         const result = await user.delete(1);
         expect(result).toEqual(undefined);
     });
