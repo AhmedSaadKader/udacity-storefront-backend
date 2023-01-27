@@ -45,7 +45,6 @@ describe('items API response', () => {
         const res = await (0, supertest_1.default)(server_1.default)
             .post(url + '/')
             .send(test_item_2);
-        console.log(res.body);
         expect(res.statusCode).toBe(200);
         expect(res.body.token).not.toBeNull();
         expect(res.body.name).toEqual('test_item_2');
@@ -56,7 +55,6 @@ describe('items API response', () => {
     });
     it('should return proper item when requested by proper endpoint', async () => {
         const res = await (0, supertest_1.default)(server_1.default).get(url + '/2');
-        console.log(res.body);
         expect(res.statusCode).toBe(200);
         expect(res.body.token).not.toBeNull();
         expect(res.body.name).toEqual('test_item_2');

@@ -6,14 +6,17 @@ import {
   getItem,
   updateItem
 } from '../controllers/itemController';
+import auth from '../middleware/auth';
 
 const router = Router();
 
 router.get('/', getAllItems);
 
-router.post('/', createItem);
-
 router.get('/:id', getItem);
+
+router.use(auth);
+
+router.post('/', createItem);
 
 router.delete('/:id', deleteItem);
 

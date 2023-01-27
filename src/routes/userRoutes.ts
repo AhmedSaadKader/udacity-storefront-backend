@@ -6,6 +6,7 @@ import {
   registerUser,
   updateUser
 } from '../controllers/userController';
+import auth from '../middleware/auth';
 
 const router = Router();
 
@@ -15,7 +16,9 @@ router.post('/', registerUser);
 
 router.post('/login', loginUser);
 
-router.delete('/:id', deleteUser);
+router.use(auth);
+
+router.delete('/:username', deleteUser);
 
 router.patch('/:id', updateUser);
 

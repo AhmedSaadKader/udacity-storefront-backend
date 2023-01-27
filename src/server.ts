@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import itemRouter from './routes/itemRoutes';
 import userRouter from './routes/userRoutes';
+import auth from './middleware/auth';
 
 dotenv.config();
 

@@ -1,9 +1,6 @@
 import client from '../database';
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-
-dotenv.config();
 
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 
@@ -11,6 +8,7 @@ export type User = {
   id?: number | string;
   username: string;
   password: string;
+  password_digest?: string;
 };
 
 export class UserModel {
@@ -30,6 +28,17 @@ export class UserModel {
       password_digest
     );
     return isMatch;
+  }
+  async usernameExists(username: string): Promise<User | undefined> {
+    const conn = await client.connect();
+    const sql = 'SELECT * FROM users WHERE username=($1)';
+    const result = await conn.query(sql, [username]);
+    conn.release();
+    if (!result.rows.length) {
+      return undefined;
+    }
+    const user = result.rows[0];
+    return user;
   }
   async index(): Promise<User[]> {
     try {
@@ -61,32 +70,43 @@ export class UserModel {
     password: string
   ): Promise<User | string> {
     try {
-      const conn = await client.connect();
-      const sql = 'SELECT * FROM users WHERE username=($1)';
-      const result = await conn.query(sql, [username]);
-      conn.release();
-      if (!result.rows.length) {
-        return 'username unavailable';
+      const user = await this.usernameExists(username);
+      if (!user) {
+        throw new Error('username unavailable');
       }
-      const user = result.rows[0];
-      if (!this.comparePassword(password, user.password_digest)) {
-        return 'password is incorrect';
+      if (!this.comparePassword(password, user.password_digest as string)) {
+        throw new Error('password is incorrect');
       }
       return user;
     } catch (err) {
       throw new Error(`Could not find user ${username}. Error: ${err}`);
     }
   }
-  async delete(id: number | string): Promise<undefined> {
+  async delete(username: string): Promise<undefined> {
     try {
       const conn = await client.connect();
-      const sql = 'DELETE FROM users WHERE id=($1)';
-      const result = await conn.query(sql, [id]);
+      const sql = 'DELETE FROM users WHERE username=($1)';
+      const result = await conn.query(sql, [username]);
       const user = result.rows[0];
       conn.release();
       return user;
     } catch (err) {
-      throw new Error(`Could not delete user ${id}. Error: ${err}`);
+      throw new Error(`Could not delete user ${username}. Error: ${err}`);
+    }
+  }
+  async update(
+    id: string | number,
+    newUsername?: string
+  ): Promise<User | string> {
+    try {
+      const conn = await client.connect();
+      const sql = 'UPDATE users SET username=($1) WHERE id=($2)';
+      const result = await conn.query(sql, [newUsername, id]);
+      const user = result.rows[0];
+      conn.release();
+      return user;
+    } catch (err) {
+      throw new Error(`Could not update user with id:${id}. Error: ${err}`);
     }
   }
 }

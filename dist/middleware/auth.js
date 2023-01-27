@@ -9,11 +9,10 @@ const auth = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith('Bearer')) {
         throw new Error('Authentication invalid');
     }
-    const token = authHeader.split('')[1];
+    const token = authHeader.split(' ')[1];
     try {
         const tokenVerified = jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET);
-        console.log(tokenVerified);
-        req.user = { tokenVerified };
+        req.user = { ...tokenVerified };
         next();
     }
     catch (error) {

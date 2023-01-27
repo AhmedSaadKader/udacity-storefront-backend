@@ -19,16 +19,18 @@ const getAllUsers = async (req, res) => {
     }
 };
 exports.getAllUsers = getAllUsers;
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
     const { username, password } = req.body;
     try {
+        if (await user.usernameExists(username)) {
+            throw new Error('username already exists. Please login instead');
+        }
         const newUser = await user.create({ username, password });
         const token = user.createJWT(newUser.id, newUser.username);
         res.json({ token, username: newUser.username, id: newUser.id });
     }
     catch (error) {
-        res.status(400);
-        res.json(error);
+        next(error);
     }
 };
 exports.registerUser = registerUser;
@@ -52,24 +54,42 @@ const loginUser = async (req, res, next) => {
     }
 };
 exports.loginUser = loginUser;
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
     try {
-        const deletedUser = await user.delete(req.params.id);
+        const username = req.user?.username;
+        const getUser = await user.usernameExists(req.params.username);
+        if (username !== getUser?.username) {
+            throw new Error('Unauthorized to delete this user');
+        }
+        const deletedUser = await user.delete(req.params.username);
         res.json(deletedUser);
     }
     catch (error) {
-        res.status(400);
-        res.json(error);
+        next(error);
     }
 };
 exports.deleteUser = deleteUser;
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     try {
-        res.send('update item');
+        const username = req.user?.username;
+        const userId = parseInt(req.params.id);
+        const getUser = await user.usernameExists(username);
+        if (userId !== getUser?.id) {
+            throw new Error('Unauthorized to edit this user');
+        }
+        const newUsername = req.body.username;
+        if (!newUsername || newUsername === getUser?.username) {
+            throw new Error('Please provide a new username');
+        }
+        if (await user.usernameExists(newUsername)) {
+            throw new Error('Username already in use. Please provide a new username');
+        }
+        const updateUser = await user.update(userId, newUsername);
+        res.send(updateUser);
     }
     catch (error) {
         res.status(400);
-        res.json(error);
+        next(error);
     }
 };
 exports.updateUser = updateUser;

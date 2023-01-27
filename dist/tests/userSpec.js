@@ -39,7 +39,7 @@ describe('UserModel', () => {
         expect(result.username).toEqual('test_user');
     });
     it('delete method should delete specific user', async () => {
-        const result = await user.delete(1);
+        const result = await user.delete('test_user');
         expect(result).toEqual(undefined);
     });
 });

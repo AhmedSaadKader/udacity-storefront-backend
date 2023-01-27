@@ -247,6 +247,25 @@ Before submitting your project, spin it up and test each endpoint. If each one r
 - import itemRouter in server.ts and use with proper route
 - add model methods to corresponding controller functions and test with postman
 
+#### postman testing
+
+- create collection for project
+- create url global variable for base url
+- create folders for items and user endpoints
+- create token global variable for authentication
+- in createUser and login endpoint add this to Tests to set token global variable on request sent:
+
+```javascript
+const jsonData = pm.response.json();
+pm.globals.set('token', jsonData.token);
+```
+
+- in items endpoints change authorization to Bearer token
+
+#### testing items endpoints
+
+- in serverSpec.ts add testing for REST endpoint response
+
 ### Users and Authorization
 
 #### User model
@@ -296,3 +315,5 @@ CREATE TABLE users (
 #### user endpoint testing
 
 - in serverSpec.ts add testing for login and register and allusers endpoint response
+
+#### add auth as middleware in items routes and in user routes
