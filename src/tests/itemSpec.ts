@@ -1,8 +1,16 @@
 import { ItemStore } from '../models/Item';
+import { User, UserModel } from '../models/User';
 
 const store = new ItemStore();
+const user = new UserModel();
 
 describe('ItemStore Model', () => {
+  beforeAll(async () => {
+    await user.create({
+      username: 'item_test_user',
+      password: 'test_password_100'
+    });
+  });
   it('should have an index method', () => {
     expect(store.index).toBeDefined();
   });
@@ -16,8 +24,13 @@ describe('ItemStore Model', () => {
     expect(store.delete).toBeDefined();
   });
   it('create method should create a new item', async () => {
-    const result = await store.create({ name: 'test_item', price: 100 });
-    expect(result).toEqual({ id: 1, name: 'test_item', price: 100 });
+    const result = await store.create('test_item', 100, 'item_test_user');
+    expect(result).toEqual({
+      id: 1,
+      name: 'test_item',
+      price: 100,
+      created_by: 'item_test_user'
+    });
   });
   it('index method should return list of items', async () => {
     const result = await store.index();
@@ -25,7 +38,12 @@ describe('ItemStore Model', () => {
   });
   it('show method should show specific item', async () => {
     const result = await store.show(1);
-    expect(result).toEqual({ id: 1, name: 'test_item', price: 100 });
+    expect(result).toEqual({
+      id: 1,
+      name: 'test_item',
+      price: 100,
+      created_by: 'item_test_user'
+    });
   });
   it('delete method should delete specific item', async () => {
     const result = await store.delete(1);

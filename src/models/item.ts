@@ -4,6 +4,7 @@ export type Item = {
   id?: number | string; //id is not provided when creating the item that is why it is optional
   name: string;
   price: number;
+  created_by: string;
 };
 
 export class ItemStore {
@@ -29,12 +30,12 @@ export class ItemStore {
       throw new Error(`Could not find item ${id}. Error: ${err}`);
     }
   }
-  async create(item: Item): Promise<Item> {
-    const { name, price } = item;
+  async create(name: string, price: number, username: string): Promise<Item> {
     try {
       const conn = await client.connect();
-      const sql = 'INSERT INTO items (name, price) VALUES ($1, $2) RETURNING *';
-      const result = await conn.query(sql, [name, price]);
+      const sql =
+        'INSERT INTO items (name, price, created_by) VALUES ($1, $2, $3) RETURNING *';
+      const result = await conn.query(sql, [name, price, username]);
       conn.release();
       return result.rows[0];
     } catch (err) {

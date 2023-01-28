@@ -30,12 +30,11 @@ class ItemStore {
             throw new Error(`Could not find item ${id}. Error: ${err}`);
         }
     }
-    async create(item) {
-        const { name, price } = item;
+    async create(name, price, username) {
         try {
             const conn = await database_1.default.connect();
-            const sql = 'INSERT INTO items (name, price) VALUES ($1, $2) RETURNING *';
-            const result = await conn.query(sql, [name, price]);
+            const sql = 'INSERT INTO items (name, price, created_by) VALUES ($1, $2, $3) RETURNING *';
+            const result = await conn.query(sql, [name, price, username]);
             conn.release();
             return result.rows[0];
         }

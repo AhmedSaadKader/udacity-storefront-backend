@@ -14,15 +14,15 @@ const getAllItems = async (req, res) => {
     }
 };
 exports.getAllItems = getAllItems;
-const createItem = async (req, res) => {
+const createItem = async (req, res, next) => {
     const { name, price } = req.body;
+    console.log(req.user?.username);
     try {
-        const newItem = await itemStore.create({ name, price });
+        const newItem = await itemStore.create(name, price, req.user?.username);
         res.json(newItem);
     }
     catch (error) {
-        res.status(400);
-        res.json(error);
+        next(error);
     }
 };
 exports.createItem = createItem;

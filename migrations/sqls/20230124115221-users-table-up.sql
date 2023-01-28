@@ -1,5 +1,5 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(100),
+    username VARCHAR(100) UNIQUE,
     password_digest VARCHAR
 );

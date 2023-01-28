@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { RequestAuth } from '../../types';
 import { ItemStore } from '../models/Item';
 
 const itemStore = new ItemStore();
@@ -17,16 +18,21 @@ export const getAllItems = async (
 };
 
 export const createItem = async (
-  req: Request,
-  res: Response
+  req: RequestAuth,
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   const { name, price } = req.body;
+  console.log(req.user?.username as string);
   try {
-    const newItem = await itemStore.create({ name, price });
+    const newItem = await itemStore.create(
+      name,
+      price,
+      req.user?.username as string
+    );
     res.json(newItem);
   } catch (error) {
-    res.status(400);
-    res.json(error);
+    next(error);
   }
 };
 
