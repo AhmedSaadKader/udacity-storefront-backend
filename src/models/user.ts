@@ -1,6 +1,6 @@
-import client from '../database';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { connectionSQLResult } from '../utils/helper_functions/sql_query';
 
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 
@@ -30,10 +30,8 @@ export class UserModel {
     return isMatch;
   }
   async usernameExists(username: string): Promise<User | undefined> {
-    const conn = await client.connect();
     const sql = 'SELECT * FROM users WHERE username=($1)';
-    const result = await conn.query(sql, [username]);
-    conn.release();
+    const result = await connectionSQLResult(sql, [username]);
     if (!result.rows.length) {
       return undefined;
     }
@@ -42,10 +40,8 @@ export class UserModel {
   }
   async index(): Promise<User[]> {
     try {
-      const conn = await client.connect();
       const sql = 'SELECT * FROM users';
-      const result = await conn.query(sql);
-      conn.release();
+      const result = await connectionSQLResult(sql, []);
       return result.rows;
     } catch (err) {
       throw new Error(`Could not find users. Error: ${err}`);
@@ -54,12 +50,13 @@ export class UserModel {
   async create(user: User): Promise<User> {
     const { username, password } = user;
     try {
-      const conn = await client.connect();
       const sql =
         'INSERT INTO users (username, password_digest) VALUES ($1, $2) RETURNING *';
       const password_digest = this.hashPassword(password);
-      const result = await conn.query(sql, [username, password_digest]);
-      conn.release();
+      const result = await connectionSQLResult(sql, [
+        username,
+        password_digest
+      ]);
       return result.rows[0];
     } catch (err) {
       throw new Error(`Could not create user ${username}. Error: ${err}`);
@@ -84,26 +81,22 @@ export class UserModel {
   }
   async delete(username: string): Promise<undefined> {
     try {
-      const conn = await client.connect();
       const sql = 'DELETE FROM users WHERE username=($1)';
-      const result = await conn.query(sql, [username]);
+      const result = await connectionSQLResult(sql, [username]);
       const user = result.rows[0];
-      conn.release();
       return user;
     } catch (err) {
       throw new Error(`Could not delete user ${username}. Error: ${err}`);
     }
   }
-  async update(
-    id: string | number,
-    newUsername?: string
-  ): Promise<User | string> {
+  async update(id: string | number, newUsername?: string): Promise<User> {
     try {
-      const conn = await client.connect();
-      const sql = 'UPDATE users SET username=($1) WHERE id=($2)';
-      const result = await conn.query(sql, [newUsername, id]);
+      const sql = 'UPDATE users SET username=($1) WHERE id=($2) RETURNING *';
+      const result = await connectionSQLResult(sql, [
+        newUsername as string,
+        id
+      ]);
       const user = result.rows[0];
-      conn.release();
       return user;
     } catch (err) {
       throw new Error(`Could not update user with id:${id}. Error: ${err}`);

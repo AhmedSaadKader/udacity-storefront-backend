@@ -11,7 +11,7 @@ describe("GET API '/'", () => {
   });
 });
 
-describe('users API response', () => {
+describe('users API response for endpoints without auth', () => {
   const url = '/api/v1/users';
   it('should create new user and send token when sending credentials to create url', async () => {
     const res = await request(app)
@@ -35,6 +35,52 @@ describe('users API response', () => {
   });
 });
 
+describe('users API response with auth for deleting and updating users', () => {
+  const url = '/api/v1/users';
+  let token: string;
+  const test_user_3 = {
+    username: 'test_user_3',
+    password: 'test_password_3'
+  };
+  it('should return error at update endpoint if not authorized', async () => {
+    const res = await request(app)
+      .patch(url + '/3')
+      .send({ username: 'updated_username' });
+    expect(res.statusCode).toBe(401);
+    expect(res.text).toBe('Authentication invalid');
+    expect(res.body.token).toBeUndefined();
+  });
+  it('should return error at delete endpoint if not authorized', async () => {
+    const res = await request(app).delete(url + '/3');
+    expect(res.statusCode).toBe(401);
+    expect(res.text).toBe('Authentication invalid');
+    expect(res.body.token).toBeUndefined();
+  });
+  it('should update user at update endpoint', async () => {
+    const register = await request(app).post(url).send(test_user_3);
+    token = register.body.token;
+    const res = await request(app)
+      .patch(url + '/3')
+      .send({ username: 'updated_username' })
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).not.toBeNull();
+    expect(res.body.username).toEqual('updated_username');
+  });
+  it('should delete user at delete endpoint', async () => {
+    const login = await request(app)
+      .post(url + '/login')
+      .send({ username: 'updated_username', password: 'test_password_3' });
+    token = login.body.token;
+    const res = await request(app)
+      .delete(url + '/updated_username')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).not.toBeNull();
+    expect(res.body.username).toEqual(undefined);
+  });
+});
+
 describe('items API response', () => {
   const url = '/api/v1/items';
   const test_item_2 = {
@@ -48,7 +94,6 @@ describe('items API response', () => {
       .post('/api/v1/users/login')
       .send(test_user_2);
     token = res.body.token;
-    console.log(token);
   });
   it('should create new item at post endpoint', async () => {
     const res = await request(app)
@@ -68,5 +113,49 @@ describe('items API response', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.token).not.toBeNull();
     expect(res.body.name).toEqual('test_item_2');
+  });
+  it('should update item with name only on update endpoint', async () => {
+    const res = await request(app)
+      .patch(url + '/2')
+      .send({ name: 'updated_item' })
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).not.toBeNull();
+    expect(res.body.name).toEqual('updated_item');
+    expect(res.body.price).toEqual(test_item_2.price);
+  });
+  it('should update item with price only on update endpoint', async () => {
+    const res = await request(app)
+      .patch(url + '/2')
+      .send({ price: 200 })
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).not.toBeNull();
+    expect(res.body.name).toEqual('updated_item');
+    expect(res.body.price).toEqual(200);
+  });
+  it('should update item with name and price only on update endpoint', async () => {
+    const res = await request(app)
+      .patch(url + '/2')
+      .send({ name: 'updated_item_3', price: 300 })
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).not.toBeNull();
+    expect(res.body.name).toEqual('updated_item_3');
+    expect(res.body.price).toEqual(300);
+  });
+  it('should return error at delete endpoint if not authorized', async () => {
+    const res = await request(app).delete(url + '/3');
+    expect(res.statusCode).toBe(401);
+    expect(res.text).toBe('Authentication invalid');
+    expect(res.body.token).toBeUndefined();
+  });
+  it('should delete item at delete endpoint', async () => {
+    const res = await request(app)
+      .delete(url + '/2')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).not.toBeNull();
+    expect(res.body.name).toEqual(undefined);
   });
 });

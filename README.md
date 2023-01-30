@@ -317,3 +317,40 @@ CREATE TABLE users (
 - in serverSpec.ts add testing for login and register and allusers endpoint response
 
 #### add auth as middleware in items routes and in user routes
+
+- in itemroutes.ts add auth middleware before necessary routes.
+- in serverSpec in items spec => beforeAll get the token and add to proper routes to test authorization.
+
+### create orders table and order-product table
+
+- db-migrate create orders-table --sql-file
+- db-migrate create order-product --sql-file
+- orders-table-up:
+
+```sql
+CREATE TABLE orders (
+  id SERIAL PRIMARY KEY,
+  status VARCHAR(50),
+  user_username VARCHAR(50) REFERENCES users(username)
+);
+```
+
+- order-product-up:
+
+```sql
+CREATE TABLE order-product (
+  id SERIAL PRIMARY KEY,
+  quantity integer,
+  order_id bigint REFERENCES orders(id),
+  product_id bigint REFERENCES products(id)
+);
+```
+
+### orders model, routes, controllers and order-product post function
+
+- type Order
+- class order with all CRUD functions
+- in order model add order-product create function
+- orderRoute create all REST APIs endpoints
+- orderController all routes functions
+- add order-product create function to orderController.ts and post route to orderRoute.ts

@@ -45,6 +45,15 @@ describe('ItemStore Model', () => {
       created_by: 'item_test_user'
     });
   });
+  it('update method should update specific item', async () => {
+    const result = await store.update(1, 'updated_item', 120);
+    expect(result).toEqual({
+      id: 1,
+      name: 'updated_item',
+      price: 120,
+      created_by: 'item_test_user'
+    });
+  });
   it('delete method should delete specific item', async () => {
     const result = await store.delete(1);
     expect(result).toEqual(undefined);

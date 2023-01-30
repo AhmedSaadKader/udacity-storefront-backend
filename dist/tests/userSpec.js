@@ -30,6 +30,11 @@ describe('UserModel', () => {
         const result = await user.authenticateUser('test_user', 'test_password_100');
         expect(result.username).toEqual('test_user');
     });
+    it('update method should return updated user', async () => {
+        const usertoupdate = await user.usernameExists('test_user');
+        const result = await user.update(usertoupdate?.id, 'updateUsername');
+        expect(result.username).toEqual('updateUsername');
+    });
     it('delete method should delete specific user', async () => {
         const result = await user.delete('test_user');
         expect(result).toEqual(undefined);

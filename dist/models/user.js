@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = void 0;
-const database_1 = __importDefault(require("../database"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const sql_query_1 = require("../utils/helper_functions/sql_query");
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 class UserModel {
     hashPassword(password) {
@@ -21,10 +21,8 @@ class UserModel {
         return isMatch;
     }
     async usernameExists(username) {
-        const conn = await database_1.default.connect();
         const sql = 'SELECT * FROM users WHERE username=($1)';
-        const result = await conn.query(sql, [username]);
-        conn.release();
+        const result = await (0, sql_query_1.connectionSQLResult)(sql, [username]);
         if (!result.rows.length) {
             return undefined;
         }
@@ -33,10 +31,8 @@ class UserModel {
     }
     async index() {
         try {
-            const conn = await database_1.default.connect();
             const sql = 'SELECT * FROM users';
-            const result = await conn.query(sql);
-            conn.release();
+            const result = await (0, sql_query_1.connectionSQLResult)(sql, []);
             return result.rows;
         }
         catch (err) {
@@ -46,11 +42,12 @@ class UserModel {
     async create(user) {
         const { username, password } = user;
         try {
-            const conn = await database_1.default.connect();
             const sql = 'INSERT INTO users (username, password_digest) VALUES ($1, $2) RETURNING *';
             const password_digest = this.hashPassword(password);
-            const result = await conn.query(sql, [username, password_digest]);
-            conn.release();
+            const result = await (0, sql_query_1.connectionSQLResult)(sql, [
+                username,
+                password_digest
+            ]);
             return result.rows[0];
         }
         catch (err) {
@@ -74,11 +71,9 @@ class UserModel {
     }
     async delete(username) {
         try {
-            const conn = await database_1.default.connect();
             const sql = 'DELETE FROM users WHERE username=($1)';
-            const result = await conn.query(sql, [username]);
+            const result = await (0, sql_query_1.connectionSQLResult)(sql, [username]);
             const user = result.rows[0];
-            conn.release();
             return user;
         }
         catch (err) {
@@ -87,11 +82,12 @@ class UserModel {
     }
     async update(id, newUsername) {
         try {
-            const conn = await database_1.default.connect();
-            const sql = 'UPDATE users SET username=($1) WHERE id=($2)';
-            const result = await conn.query(sql, [newUsername, id]);
+            const sql = 'UPDATE users SET username=($1) WHERE id=($2) RETURNING *';
+            const result = await (0, sql_query_1.connectionSQLResult)(sql, [
+                newUsername,
+                id
+            ]);
             const user = result.rows[0];
-            conn.release();
             return user;
         }
         catch (err) {
