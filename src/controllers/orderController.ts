@@ -10,7 +10,8 @@ export const getAllOrders = async (
   next: NextFunction
 ) => {
   try {
-    res.send('getAllOrders');
+    const get_all_orders = await order.index();
+    res.json(get_all_orders);
   } catch (error) {
     next(error);
   }
@@ -22,7 +23,8 @@ export const createOrder = async (
   next: NextFunction
 ) => {
   try {
-    res.send('create Order');
+    const order_created = await order.create(req.body.status, req.body.user_id);
+    res.json(order_created);
   } catch (error) {
     next(error);
   }
@@ -34,7 +36,8 @@ export const getOrder = async (
   next: NextFunction
 ) => {
   try {
-    res.send('get Order');
+    const get_order = await order.show(req.params.orderId);
+    res.json(get_order);
   } catch (error) {
     next(error);
   }
@@ -58,13 +61,17 @@ export const updateOrder = async (
   next: NextFunction
 ) => {
   try {
-    res.send('update Order');
+    const updatedOrder = await order.update(
+      req.params.orderId,
+      req.body.status
+    );
+    res.json(updatedOrder);
   } catch (error) {
     next(error);
   }
 };
 
-export const addProductToOrder = async (
+export const addItemToOrder = async (
   req: RequestAuth,
   res: Response,
   next: NextFunction
@@ -72,7 +79,7 @@ export const addProductToOrder = async (
   try {
     const orderId = req.params.orderId;
     const { quantity, itemId } = req.body;
-    const order_product = order.addProduct(quantity, orderId, itemId);
+    const order_product = await order.addItem(quantity, orderId, itemId);
     res.json(order_product);
   } catch (error) {
     next(error);

@@ -13,4 +13,5 @@ router.post('/', orderController_1.createOrder);
 router.get('/:orderId', orderController_1.getOrder);
 router.delete('/:orderId', orderController_1.deleteOrder);
 router.patch('/:orderId', orderController_1.updateOrder);
-router.post('/:orderId/products', orderController_1.addProductToOrder);
+router.post('/:orderId/products', orderController_1.addItemToOrder);
+exports.default = router;

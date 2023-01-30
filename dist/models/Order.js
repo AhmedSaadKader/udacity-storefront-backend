@@ -53,7 +53,7 @@ class OrderModel {
             throw new Error(`Could not update order. Error: ${err}`);
         }
     }
-    async addProduct(quantity, orderId, itemId) {
+    async addItem(quantity, orderId, itemId) {
         try {
             const sql = 'INSERT INTO order_items (quantity, order_id, item_id) VALUES ($1, $2, $3) RETURNING *';
             const result = await (0, sql_query_1.connectionSQLResult)(sql, [

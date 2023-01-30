@@ -5,7 +5,7 @@ import {
   getAllOrders,
   getOrder,
   updateOrder,
-  addProductToOrder
+  addItemToOrder
 } from '../controllers/orderController';
 import auth from '../middleware/auth';
 
@@ -19,4 +19,6 @@ router.get('/:orderId', getOrder);
 router.delete('/:orderId', deleteOrder);
 router.patch('/:orderId', updateOrder);
 
-router.post('/:orderId/products', addProductToOrder);
+router.post('/:orderId/products', addItemToOrder);
+
+export default router;

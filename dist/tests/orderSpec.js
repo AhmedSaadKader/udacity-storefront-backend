@@ -61,7 +61,7 @@ describe('', () => {
     it('should add item to order_item table with addProduct method', async () => {
         const newItem = await item.create('order_test_item', 400, order_user.username);
         console.log(newItem);
-        const result = await order.addProduct(5, 1, newItem.id);
+        const result = await order.addItem(5, 1, newItem.id);
         console.log(result);
         expect(result).toEqual({ id: 1, quantity: 5, order_id: 1, item_id: 2 });
     });

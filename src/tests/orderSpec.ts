@@ -65,7 +65,7 @@ describe('', () => {
       order_user.username
     );
     console.log(newItem);
-    const result = await order.addProduct(5, 1, newItem.id as number);
+    const result = await order.addItem(5, 1, newItem.id as number);
     console.log(result);
     expect(result).toEqual({ id: 1, quantity: 5, order_id: 1, item_id: 2 });
   });

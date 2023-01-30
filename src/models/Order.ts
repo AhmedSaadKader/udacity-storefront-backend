@@ -53,7 +53,7 @@ export class OrderModel {
       throw new Error(`Could not update order. Error: ${err}`);
     }
   }
-  async addProduct(
+  async addItem(
     quantity: number,
     orderId: string | number,
     itemId: string | number

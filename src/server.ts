@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import itemRouter from './routes/itemRoutes';
 import userRouter from './routes/userRoutes';
-import auth from './middleware/auth';
+import orderRouter from './routes/orderRoutes';
 
 dotenv.config();
 
@@ -25,6 +25,7 @@ app.get('/', function (req: Request, res: Response) {
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/items', itemRouter);
+app.use('/api/v1/orders', orderRouter);
 
 app.listen(port, function () {
   console.log(`starting app on: ${address}`);
