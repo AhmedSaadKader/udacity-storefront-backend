@@ -25,8 +25,8 @@ class OrderModel {
     }
     async create(status, userId) {
         try {
-            const sql = 'INSERT INTO orders (status, userId) VALUES ($1, $2)';
-            const result = await (0, sql_query_1.connectionSQLResult)(sql, [status, userId]);
+            const sql = 'INSERT INTO orders (user_id, status) VALUES ($1, $2) RETURNING *';
+            const result = await (0, sql_query_1.connectionSQLResult)(sql, [userId, status]);
             return result.rows[0];
         }
         catch (err) {
@@ -45,8 +45,8 @@ class OrderModel {
     }
     async update(id, newStatus) {
         try {
-            const sql = 'UPDATE orders SET status=($1) WHERE id=($2)';
-            const result = await (0, sql_query_1.connectionSQLResult)(sql, [newStatus]);
+            const sql = 'UPDATE orders SET status=($1) WHERE id=($2) RETURNING *';
+            const result = await (0, sql_query_1.connectionSQLResult)(sql, [newStatus, id]);
             return result.rows[0];
         }
         catch (err) {
@@ -55,7 +55,7 @@ class OrderModel {
     }
     async addProduct(quantity, orderId, itemId) {
         try {
-            const sql = 'INSERT INTO order_items (quantity, order_id, product_id) VALUES ($1, $2, $3)';
+            const sql = 'INSERT INTO order_items (quantity, order_id, item_id) VALUES ($1, $2, $3) RETURNING *';
             const result = await (0, sql_query_1.connectionSQLResult)(sql, [
                 quantity,
                 orderId,

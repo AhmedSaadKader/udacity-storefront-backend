@@ -10,6 +10,6 @@ export const connectionSQLResult = async (
     conn.release();
     return result;
   } catch (err) {
-    throw new Error();
+    throw new Error(`Error in sql connection or query. Error: ${err}`);
   }
 };

@@ -23,6 +23,9 @@ describe('ItemStore Model', () => {
     it('should have a delete method', () => {
         expect(store.delete).toBeDefined();
     });
+    it('should have a update method', () => {
+        expect(store.update).toBeDefined();
+    });
     it('create method should create a new item', async () => {
         const result = await store.create('test_item', 100, 'item_test_user');
         expect(result).toEqual({

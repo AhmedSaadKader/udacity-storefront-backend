@@ -27,8 +27,9 @@ export class OrderModel {
   }
   async create(status: string, userId: string | number) {
     try {
-      const sql = 'INSERT INTO orders (status, userId) VALUES ($1, $2)';
-      const result = await connectionSQLResult(sql, [status, userId]);
+      const sql =
+        'INSERT INTO orders (user_id, status) VALUES ($1, $2) RETURNING *';
+      const result = await connectionSQLResult(sql, [userId, status]);
       return result.rows[0];
     } catch (err) {
       throw new Error(`Could not create order. Error: ${err}`);
@@ -45,8 +46,8 @@ export class OrderModel {
   }
   async update(id: string | number, newStatus: string) {
     try {
-      const sql = 'UPDATE orders SET status=($1) WHERE id=($2)';
-      const result = await connectionSQLResult(sql, [newStatus]);
+      const sql = 'UPDATE orders SET status=($1) WHERE id=($2) RETURNING *';
+      const result = await connectionSQLResult(sql, [newStatus, id]);
       return result.rows[0];
     } catch (err) {
       throw new Error(`Could not update order. Error: ${err}`);
@@ -59,7 +60,7 @@ export class OrderModel {
   ) {
     try {
       const sql =
-        'INSERT INTO order_items (quantity, order_id, product_id) VALUES ($1, $2, $3)';
+        'INSERT INTO order_items (quantity, order_id, item_id) VALUES ($1, $2, $3) RETURNING *';
       const result = await connectionSQLResult(sql, [
         quantity,
         orderId,

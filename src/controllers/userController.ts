@@ -102,7 +102,6 @@ export const updateUser = async (
       throw new Error('Username already in use. Please provide a new username');
     }
     const updateUser = await user.update(userId, newUsername);
-    console.log(updateUser);
     res.json(updateUser);
   } catch (error) {
     res.status(400);

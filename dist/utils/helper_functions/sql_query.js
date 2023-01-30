@@ -13,7 +13,7 @@ const connectionSQLResult = async (sqlQuery, sqlParams) => {
         return result;
     }
     catch (err) {
-        throw new Error();
+        throw new Error(`Error in sql connection or query. Error: ${err}`);
     }
 };
 exports.connectionSQLResult = connectionSQLResult;
