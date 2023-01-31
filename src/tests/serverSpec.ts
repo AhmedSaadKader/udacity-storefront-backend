@@ -106,13 +106,13 @@ describe('items API response', () => {
     expect(res.body.length).toBeGreaterThanOrEqual(1);
   });
   it('should return proper item when requested by proper endpoint', async () => {
-    const res = await request(app).get(url + '/3');
+    const res = await request(app).get(url + '/4');
     expect(res.statusCode).toBe(200);
     expect(res.body.name).toEqual('test_item_2');
   });
   it('should update item with name only on update endpoint', async () => {
     const res = await request(app)
-      .patch(url + '/3')
+      .patch(url + '/4')
       .send({ name: 'updated_item' })
       .set('Authorization', `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
@@ -121,7 +121,7 @@ describe('items API response', () => {
   });
   it('should update item with price only on update endpoint', async () => {
     const res = await request(app)
-      .patch(url + '/3')
+      .patch(url + '/4')
       .send({ price: 200 })
       .set('Authorization', `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
@@ -130,7 +130,7 @@ describe('items API response', () => {
   });
   it('should update item with name and price only on update endpoint', async () => {
     const res = await request(app)
-      .patch(url + '/3')
+      .patch(url + '/4')
       .send({ name: 'updated_item_3', price: 300 })
       .set('Authorization', `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
@@ -145,7 +145,7 @@ describe('items API response', () => {
   });
   it('should delete item at delete endpoint', async () => {
     const res = await request(app)
-      .delete(url + '/3')
+      .delete(url + '/4')
       .set('Authorization', `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
     expect(res.body.name).toEqual(undefined);
@@ -204,11 +204,19 @@ describe('orders API response', () => {
   it('should add item to order at add item endpoint', async () => {
     const res = await request(app)
       .post(url + `/${order_created_id}/products`)
-      .send({ quantity: 10, itemId: 2 })
+      .send({ quantity: 10, itemId: 3 })
       .set('Authorization', `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
     expect(res.body.quantity).toEqual(10);
     expect(res.body.order_id).toEqual(order_created_id);
-    expect(res.body.item_id).toEqual(2);
+    expect(res.body.item_id).toEqual(3);
+  });
+  it('should return list of items in orders with dashboard queries', async () => {
+    const res = await request(app)
+      .get('/api/v1/dashboard/items_in_orders')
+      .set('Authorization', `Bearer ${token}`);
+    console.log(res.body);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBeGreaterThan(0);
   });
 });

@@ -9,6 +9,7 @@ const cors_1 = __importDefault(require("cors"));
 const itemRoutes_1 = __importDefault(require("./routes/itemRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
+const dashboardRoutes_1 = __importDefault(require("./services/dashboard/dashboardRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || '5000';
@@ -24,6 +25,7 @@ app.get('/', function (req, res) {
 app.use('/api/v1/users', userRoutes_1.default);
 app.use('/api/v1/items', itemRoutes_1.default);
 app.use('/api/v1/orders', orderRoutes_1.default);
+app.use('/api/v1/dashboard', dashboardRoutes_1.default);
 app.listen(port, function () {
     console.log(`starting app on: ${address}`);
 });

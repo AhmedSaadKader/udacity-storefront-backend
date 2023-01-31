@@ -6,6 +6,13 @@ export type Order = {
   user_id: string | number;
 };
 
+export type Order_items = {
+  id?: string | number;
+  quantity: number;
+  order_id: string | number;
+  item_id: string | number;
+};
+
 export class OrderModel {
   async index(): Promise<Order[]> {
     try {
@@ -57,7 +64,7 @@ export class OrderModel {
     quantity: number,
     orderId: string | number,
     itemId: string | number
-  ) {
+  ): Promise<Order_items> {
     try {
       const sql =
         'INSERT INTO order_items (quantity, order_id, item_id) VALUES ($1, $2, $3) RETURNING *';

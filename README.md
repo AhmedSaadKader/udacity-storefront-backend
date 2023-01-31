@@ -354,3 +354,19 @@ CREATE TABLE order-product (
 - orderRoute create all REST APIs endpoints
 - orderController all routes functions
 - add order-product create function to orderController.ts and post route to orderRoute.ts
+- add testing for order methods and endpoints and add item to order-product
+
+### Create a dashboard endpoint
+
+- inner join
+
+```sql
+  SELECT * FROM products INNER JOIN order_products ON product.id = order_products.id;
+```
+
+- create services folder
+- dashboard.ts
+- add methods from database in the form of specialized select queries or joins.
+- ONLY READ METHODS!!
+- create router and controller for dashboard queries
+- test

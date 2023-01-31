@@ -4,6 +4,7 @@ import cors from 'cors';
 import itemRouter from './routes/itemRoutes';
 import userRouter from './routes/userRoutes';
 import orderRouter from './routes/orderRoutes';
+import dashboardRouter from './services/dashboard/dashboardRoutes';
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get('/', function (req: Request, res: Response) {
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/items', itemRouter);
 app.use('/api/v1/orders', orderRouter);
+app.use('/api/v1/dashboard', dashboardRouter);
 
 app.listen(port, function () {
   console.log(`starting app on: ${address}`);
