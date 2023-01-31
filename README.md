@@ -15,6 +15,40 @@ Your application must make use of the following libraries:
 - jsonwebtoken from npm for working with JWTs
 - jasmine from npm for testing
 
+## Tutorial
+
+- Install all dependencies:
+
+  - in terminal type: `npm i`
+
+- Create local .env file to have all role privileges in project:
+
+  - .env:
+
+  ```
+  PORT=5000
+  POSTGRES_HOST='localhost'
+  POSTGRES_DB='item_store'
+  POSTGRES_TEST='item_store_test'
+  POSTGRES_USER=<<INSERT YOUR USER>>
+  POSTGRES_PASSWORD=<<INSERT YOUR PASSWORD>>
+  ENV='dev'
+  BCRYPT_PASSWORD=speak-friend-and-enter
+  SALT_ROUNDS=10
+  TOKEN_SECRET=alohomora123!
+  ```
+
+- Setup and connect the database:
+
+  - create database:
+    - in terminal type `npm run createdb`
+  - run migrations:
+    - in terminal type `npm run migrate`
+
+- Start the project in port: 5000
+
+  - in terminal type: `npm run watch`
+
 ## Steps to Completion
 
 ### 1. Plan to Meet Requirements

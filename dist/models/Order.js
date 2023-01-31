@@ -53,18 +53,18 @@ class OrderModel {
             throw new Error(`Could not update order. Error: ${err}`);
         }
     }
-    async addItem(quantity, orderId, itemId) {
+    async addProduct(quantity, orderId, productId) {
         try {
-            const sql = 'INSERT INTO order_items (quantity, order_id, item_id) VALUES ($1, $2, $3) RETURNING *';
+            const sql = 'INSERT INTO order_products (quantity, order_id, product_id) VALUES ($1, $2, $3) RETURNING *';
             const result = await (0, sql_query_1.connectionSQLResult)(sql, [
                 quantity,
                 orderId,
-                itemId
+                productId
             ]);
             return result.rows[0];
         }
         catch (err) {
-            throw new Error(`Could not add item ${itemId} to order ${orderId}. Error: ${err}`);
+            throw new Error(`Could not add product ${productId} to order ${orderId}. Error: ${err}`);
         }
     }
 }

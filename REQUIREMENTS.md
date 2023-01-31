@@ -4,52 +4,17 @@ The company stakeholders want to create an online storefront to showcase their g
 
 These are the notes from a meeting with the frontend developer that describe what endpoints the API needs to supply, as well as data shapes the frontend and backend have agreed meet the requirements of the application.
 
-## Tutorial
-
-- Install all dependencies:
-
-  - in terminal type: `npm i`
-
-- Create local .env file to have all role privileges in project:
-
-  - .env:
-
-  ```
-  PORT=5000
-  POSTGRES_HOST='localhost'
-  POSTGRES_DB='item_store'
-  POSTGRES_TEST='item_store_test'
-  POSTGRES_USER=<<INSERT YOUR USER>>
-  POSTGRES_PASSWORD=<<INSERT YOUR PASSWORD>>
-  ENV='dev'
-  BCRYPT_PASSWORD=speak-friend-and-enter
-  SALT_ROUNDS=10
-  TOKEN_SECRET=alohomora123!
-  ```
-
-- Setup and connect the database:
-
-  - create database:
-    - in terminal type `npm run createdb`
-  - run migrations:
-    - in terminal type `npm run migrate`
-  -
-
-- Start the project in port: 5000
-
-  - in terminal type: `npm run watch`
-
--
-
 ## API Endpoints
+
+- Base URL = 'localhost:5000/api/v1'
 
 #### Products
 
-- Index
-- Show
-- Create [token required]
-- [OPTIONAL] Top 5 most popular products
-- [OPTIONAL] Products by category (args: product category)
+- Index: '/products' [GET]
+- Show: '/products/:id' [GET]
+- Create [token required]: '/products' [POST]
+- [OPTIONAL] Top 5 most popular products: '/dashboard/popular_products' [GET]
+- [OPTIONAL] Products by category (args: product category): 'dashboard/categoryProducts' [GET]
 
 #### Users
 

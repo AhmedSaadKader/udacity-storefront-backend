@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import itemRouter from './routes/itemRoutes';
+import productRouter from './routes/productRoutes';
 import userRouter from './routes/userRoutes';
 import orderRouter from './routes/orderRoutes';
 import dashboardRouter from './services/dashboard/dashboardRoutes';
@@ -25,7 +25,7 @@ app.get('/', function (req: Request, res: Response) {
 });
 
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/items', itemRouter);
+app.use('/api/v1/products', productRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/dashboard', dashboardRouter);
 

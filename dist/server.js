@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
-const itemRoutes_1 = __importDefault(require("./routes/itemRoutes"));
+const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
 const dashboardRoutes_1 = __importDefault(require("./services/dashboard/dashboardRoutes"));
@@ -23,7 +23,7 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 app.use('/api/v1/users', userRoutes_1.default);
-app.use('/api/v1/items', itemRoutes_1.default);
+app.use('/api/v1/products', productRoutes_1.default);
 app.use('/api/v1/orders', orderRoutes_1.default);
 app.use('/api/v1/dashboard', dashboardRoutes_1.default);
 app.listen(port, function () {

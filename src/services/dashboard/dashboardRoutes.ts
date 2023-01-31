@@ -1,10 +1,16 @@
 import { Router } from 'express';
 import auth from '../../middleware/auth';
-import { items_in_orders } from './dashboardController';
+import {
+  products_in_orders,
+  popular_products,
+  productsByCategory
+} from './dashboardController';
 
 const router = Router();
 
 router.use(auth);
-router.get('/items_in_orders', items_in_orders);
+router.get('/products_in_orders', products_in_orders);
+router.get('/popular_products', popular_products);
+router.get('/category_Products', productsByCategory);
 
 export default router;

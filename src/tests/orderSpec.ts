@@ -1,16 +1,18 @@
-import { ItemStore } from '../models/Item';
+import { ProductStore } from '../models/Product';
 import { Order, OrderModel } from '../models/Order';
 import { User, UserModel } from '../models/User';
 
 const order = new OrderModel();
 const user = new UserModel();
-const item = new ItemStore();
+const product = new ProductStore();
 let newOrder: Order;
 
 describe('', () => {
   let order_user: User;
   beforeAll(async () => {
     order_user = await user.create({
+      first_name: 'order_test_first_name',
+      last_name: 'order_test_last_name',
       username: 'order_test_user',
       password: 'order_test_password'
     });
@@ -35,7 +37,7 @@ describe('', () => {
     expect(newOrder.status).toEqual('pending');
     expect(newOrder.user_id).toEqual(order_user.id as number);
   });
-  it('should return list of all items with index method', async () => {
+  it('should return list of all products with index method', async () => {
     const result = await order.index();
     console.log(result);
     expect(result.length).toBeGreaterThanOrEqual(1);
@@ -50,20 +52,21 @@ describe('', () => {
     expect(result).toEqual({
       id: newOrder.id as number,
       status: 'completed',
-      user_id: order_user.id
+      user_id: order_user.id as number | string
     });
   });
-  it('should add item to order_item table with addProduct method', async () => {
-    const newItem = await item.create(
-      'order_test_item',
+  it('should add product to order_product table with addProduct method', async () => {
+    const newProduct = await product.create(
+      'order_test_product',
       400,
+      'order_test_category',
       order_user.username
     );
-    const result = await order.addItem(5, 1, newItem.id as number);
+    const result = await order.addProduct(5, 1, newProduct.id as number);
     console.log(result);
     expect(result.quantity).toEqual(5);
     expect(result.order_id).toEqual(1);
-    expect(result.item_id).toEqual(newItem.id as number);
+    expect(result.product_id).toEqual(newProduct.id as number);
   });
   //   it('should delete order with order method', async () => {
   //     const result = await order.delete(1);

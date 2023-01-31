@@ -25,12 +25,17 @@ export const registerUser = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { username, password } = req.body;
+  const { first_name, last_name, username, password } = req.body;
   try {
     if (await user.usernameExists(username)) {
       throw new Error('username already exists. Please login instead');
     }
-    const newUser = await user.create({ username, password });
+    const newUser = await user.create({
+      first_name,
+      last_name,
+      username,
+      password
+    });
     const token = user.createJWT(newUser.id as string, newUser.username);
     res.json({ token, username: newUser.username, id: newUser.id });
   } catch (error) {

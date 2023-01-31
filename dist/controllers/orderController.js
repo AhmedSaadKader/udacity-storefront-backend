@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addItemToOrder = exports.updateOrder = exports.deleteOrder = exports.getOrder = exports.createOrder = exports.getAllOrders = void 0;
+exports.addProductToOrder = exports.updateOrder = exports.deleteOrder = exports.getOrder = exports.createOrder = exports.getAllOrders = void 0;
 const Order_1 = require("../models/Order");
 const order = new Order_1.OrderModel();
 const getAllOrders = async (req, res, next) => {
@@ -15,7 +15,7 @@ const getAllOrders = async (req, res, next) => {
 exports.getAllOrders = getAllOrders;
 const createOrder = async (req, res, next) => {
     try {
-        const order_created = await order.create(req.body.status, req.body.user_id);
+        const order_created = await order.create(req.body.status, req.user?.id);
         res.json(order_created);
     }
     catch (error) {
@@ -52,15 +52,18 @@ const updateOrder = async (req, res, next) => {
     }
 };
 exports.updateOrder = updateOrder;
-const addItemToOrder = async (req, res, next) => {
+const addProductToOrder = async (req, res, next) => {
     try {
         const orderId = req.params.orderId;
-        const { quantity, itemId } = req.body;
-        const order_product = await order.addItem(quantity, orderId, itemId);
+        const { quantity, productId } = req.body;
+        if (!quantity || !productId) {
+            throw new Error('Please provide product id and quantity');
+        }
+        const order_product = await order.addProduct(quantity, orderId, productId);
         res.json(order_product);
     }
     catch (error) {
         next(error);
     }
 };
-exports.addItemToOrder = addItemToOrder;
+exports.addProductToOrder = addProductToOrder;

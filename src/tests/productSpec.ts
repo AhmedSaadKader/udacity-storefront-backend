@@ -1,14 +1,16 @@
-import { ItemStore } from '../models/Item';
+import { ProductStore } from '../models/Product';
 import { User, UserModel } from '../models/User';
 
-const store = new ItemStore();
+const store = new ProductStore();
 const user = new UserModel();
 let createdUser: User;
 
-describe('ItemStore Model', () => {
+describe('ProductStore Model', () => {
   beforeAll(async () => {
     createdUser = await user.create({
-      username: 'item_test_user',
+      first_name: 'product_test_first_name',
+      last_name: 'product_test_last_name',
+      username: 'product_test_user',
       password: 'test_password_100'
     });
   });
@@ -27,33 +29,39 @@ describe('ItemStore Model', () => {
   it('should have a update method', () => {
     expect(store.update).toBeDefined();
   });
-  it('create method should create a new item', async () => {
-    const result = await store.create('test_item', 100, 'item_test_user');
-    expect(result.name).toEqual('test_item');
+  it('create method should create a new product', async () => {
+    const result = await store.create(
+      'test_product',
+      100,
+      'test_category',
+      'product_test_user'
+    );
+    expect(result.name).toEqual('test_product');
     expect(result.price).toEqual(100);
-    expect(result.created_by).toEqual('item_test_user');
+    expect(result.category).toEqual('test_category');
+    expect(result.created_by).toEqual('product_test_user');
   });
-  it('index method should return list of items', async () => {
+  it('index method should return list of products', async () => {
     const result = await store.index();
     expect(result.length).toBeGreaterThanOrEqual(1);
   });
-  it('show method should show specific item', async () => {
+  it('show method should show specific product', async () => {
     const result = await store.show(createdUser.id as number);
-    expect(result.name).toEqual('test_item');
+    expect(result.name).toEqual('test_product');
     expect(result.price).toEqual(100);
-    expect(result.created_by).toEqual('item_test_user');
+    expect(result.created_by).toEqual('product_test_user');
   });
-  it('update method should update specific item', async () => {
+  it('update method should update specific product', async () => {
     const result = await store.update(
       createdUser.id as number,
-      'updated_item',
+      'updated_product',
       120
     );
-    expect(result.name).toEqual('updated_item');
+    expect(result.name).toEqual('updated_product');
     expect(result.price).toEqual(120);
-    expect(result.created_by).toEqual('item_test_user');
+    expect(result.created_by).toEqual('product_test_user');
   });
-  it('delete method should delete specific item', async () => {
+  it('delete method should delete specific product', async () => {
     const result = await store.delete(createdUser.id as number);
     expect(result).toEqual(undefined);
   });

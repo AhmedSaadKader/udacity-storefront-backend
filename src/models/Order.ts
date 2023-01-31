@@ -6,11 +6,11 @@ export type Order = {
   user_id: string | number;
 };
 
-export type Order_items = {
+export type Order_Products = {
   id?: string | number;
   quantity: number;
   order_id: string | number;
-  item_id: string | number;
+  product_id: string | number;
 };
 
 export class OrderModel {
@@ -32,7 +32,7 @@ export class OrderModel {
       throw new Error(`Could not find order ${id}. Error ${err}`);
     }
   }
-  async create(status: string, userId: string | number) {
+  async create(status: string, userId: string | number): Promise<Order> {
     try {
       const sql =
         'INSERT INTO orders (user_id, status) VALUES ($1, $2) RETURNING *';
@@ -42,7 +42,7 @@ export class OrderModel {
       throw new Error(`Could not create order. Error: ${err}`);
     }
   }
-  async delete(id: string | number) {
+  async delete(id: string | number): Promise<undefined> {
     try {
       const sql = 'DELETE FROM orders WHERE id=($1)';
       const result = await connectionSQLResult(sql, [id]);
@@ -51,7 +51,7 @@ export class OrderModel {
       throw new Error(`Could not delete order. Error: ${err}`);
     }
   }
-  async update(id: string | number, newStatus: string) {
+  async update(id: string | number, newStatus: string): Promise<Order> {
     try {
       const sql = 'UPDATE orders SET status=($1) WHERE id=($2) RETURNING *';
       const result = await connectionSQLResult(sql, [newStatus, id]);
@@ -60,23 +60,23 @@ export class OrderModel {
       throw new Error(`Could not update order. Error: ${err}`);
     }
   }
-  async addItem(
+  async addProduct(
     quantity: number,
     orderId: string | number,
-    itemId: string | number
-  ): Promise<Order_items> {
+    productId: string | number
+  ): Promise<Order_Products> {
     try {
       const sql =
-        'INSERT INTO order_items (quantity, order_id, item_id) VALUES ($1, $2, $3) RETURNING *';
+        'INSERT INTO order_products (quantity, order_id, product_id) VALUES ($1, $2, $3) RETURNING *';
       const result = await connectionSQLResult(sql, [
         quantity,
         orderId,
-        itemId
+        productId
       ]);
       return result.rows[0];
     } catch (err) {
       throw new Error(
-        `Could not add item ${itemId} to order ${orderId}. Error: ${err}`
+        `Could not add product ${productId} to order ${orderId}. Error: ${err}`
       );
     }
   }

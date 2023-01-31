@@ -40,11 +40,13 @@ class UserModel {
         }
     }
     async create(user) {
-        const { username, password } = user;
+        const { first_name, last_name, username, password } = user;
         try {
-            const sql = 'INSERT INTO users (username, password_digest) VALUES ($1, $2) RETURNING *';
+            const sql = 'INSERT INTO users (first_name, last_name, username, password_digest) VALUES ($1, $2, $3, $4) RETURNING *';
             const password_digest = this.hashPassword(password);
             const result = await (0, sql_query_1.connectionSQLResult)(sql, [
+                first_name,
+                last_name,
                 username,
                 password_digest
             ]);

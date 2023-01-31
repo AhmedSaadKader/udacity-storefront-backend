@@ -17,6 +17,8 @@ describe('UserModel', () => {
   });
   it('create method should create a new user', async () => {
     const result = await user.create({
+      first_name: 'test_first_name',
+      last_name: 'test_last_name',
       username: 'test_user',
       password: 'test_password_100'
     });
