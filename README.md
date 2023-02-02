@@ -1,19 +1,14 @@
 # Storefront Backend Project
 
-## Getting Started
+## Overview
 
-This repo contains a basic Node and Express app to get you started in constructing an API. To get started, clone this repo and run `yarn` in your terminal at the project root.
-
-## Required Technologies
-
-Your application must make use of the following libraries:
-
-- Postgres for the database
-- Node/Express for the application logic
-- dotenv from npm for managing environment variables
-- db-migrate from npm for migrations
-- jsonwebtoken from npm for working with JWTs
-- jasmine from npm for testing
+- This is an API for a shopping application containing:
+  - database schema that covers all requirements in REQUIREMENT.md
+  - endpoints for the frontend to fetch data
+  - data includes models and endpoints for:
+    - Users
+    - Products
+    - Orders/Carts
 
 ## Tutorial
 
@@ -28,7 +23,6 @@ Your application must make use of the following libraries:
   ```
   PORT=5000
   POSTGRES_HOST='localhost'
-  POSTGRES_DB='item_store'
   POSTGRES_TEST='item_store_test'
   POSTGRES_USER=<<INSERT YOUR USER>>
   POSTGRES_PASSWORD=<<INSERT YOUR PASSWORD>>
@@ -38,16 +32,27 @@ Your application must make use of the following libraries:
   TOKEN_SECRET=alohomora123!
   ```
 
-- Setup and connect the database:
+- To run all test:
 
-  - create database:
-    - in terminal type `npm run createdb`
-  - run migrations:
-    - in terminal type `npm run migrate`
+  - npm run test
+
+- Create database:
+
+  - in terminal type `npm run createdb`
+
+- now add this to .env file:
+
+  - POSTGRES_DB='item_store'
+
+- Run migrations:
+
+  - in terminal type `npm run migrate`
 
 - Start the project in port: 5000
 
   - in terminal type: `npm run watch`
+
+- Use the endpoints mentioned in requirements file to use the API
 
 ## Steps to Completion
 

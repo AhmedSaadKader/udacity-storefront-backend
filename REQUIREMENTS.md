@@ -16,17 +16,29 @@ These are the notes from a meeting with the frontend developer that describe wha
 - [OPTIONAL] Top 5 most popular products: '/dashboard/popular_products' [GET]
 - [OPTIONAL] Products by category (args: product category): 'dashboard/category_Products' [GET]
 
+##### Extra
+
+- Update [token required]: 'products/:id' [PATCH]
+
 #### Users
 
 - Index [token required]: '/users' [GET]
 - Show [token required]: '/users/login' [POST]
 - Create [token required]: '/users' [POST]
 
+##### Extra
+
+- Update [token required]: '/users/:id' [PATCH]
+
 #### Orders
 
 - Current Order by user (args: user id)[token required]: '/orders/myorders' [GET]
-- Orders with product: '/orders/order_products/:orderId' [GET]
+- Orders with product [token required]: '/orders/order_products/:orderId' [GET]
 - [OPTIONAL] Completed Orders by user (args: user id)[token required]: '/dashboard/completed_orders' [GET]
+
+##### Extra
+
+- Add Product to order: '/orders/:orderId/products' [POST]
 
 ## Data Shapes
 
