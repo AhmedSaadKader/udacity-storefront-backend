@@ -14,43 +14,50 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Show: '/products/:id' [GET]
 - Create [token required]: '/products' [POST]
 - [OPTIONAL] Top 5 most popular products: '/dashboard/popular_products' [GET]
-- [OPTIONAL] Products by category (args: product category): 'dashboard/categoryProducts' [GET]
+- [OPTIONAL] Products by category (args: product category): 'dashboard/category_Products' [GET]
 
 #### Users
 
-- Index [token required]
-- Show [token required]
-- Create N[token required]
+- Index [token required]: '/users' [GET]
+- Show [token required]: '/users/login' [POST]
+- Create [token required]: '/users' [POST]
 
 #### Orders
 
-- Current Order by user (args: user id)[token required]
-- [OPTIONAL] Completed Orders by user (args: user id)[token required]
+- Current Order by user (args: user id)[token required]: '/orders/myorders' [GET]
+- Orders with product: '/orders/order_products/:orderId' [GET]
+- [OPTIONAL] Completed Orders by user (args: user id)[token required]: '/dashboard/completed_orders' [GET]
 
 ## Data Shapes
 
 #### Product
 
-- id
-- name
-- price
-- [OPTIONAL] category
+| id          | name    | category | price   | created_by                     |
+| ----------- | ------- | -------- | ------- | ------------------------------ |
+| PRIMARY KEY | VARCHAR | VARCHAR  | INTEGER | FOREIGN KEY to users(username) |
+|             |         |          |         |                                |
+|             |         |          |         |                                |
 
 #### User
 
-- id
-- firstName
-- lastName
-- password
+| id                 | first_name  | last_name   | username    | password |
+| ------------------ | ----------- | ----------- | ----------- | -------- |
+| SERIAL PRIMARY KEY | VARCHAR(50) | VARCHAR(50) | VARCHAR(50) | VARCHAR  |
+|                    |             |             |             |          |
+|                    |             |             |             |          |
 
 #### Orders
 
-- id
-- id of each product in the order
-- quantity of each product in the order
-- user_id
-- status of order (active or complete)
+| id          | user_id                  | status                   |
+| ----------- | ------------------------ | ------------------------ |
+| PRIMARY KEY | FOREIGN KEY to users(id) | 'pending' OR 'completed' |
+|             |                          |                          |
+|             |                          |                          |
 
-```
+##### Order_products
 
-```
+| id          | quantity | product_id                  | order_id                  |
+| ----------- | -------- | --------------------------- | ------------------------- |
+| PRIMARY KEY | INTEGER  | FOREIGN KEY to products(id) | FOREIGN KEY to orders(id) |
+|             |          |                             |                           |
+|             |          |                             |                           |

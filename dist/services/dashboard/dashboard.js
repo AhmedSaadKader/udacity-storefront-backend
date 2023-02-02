@@ -31,5 +31,16 @@ class DashboardQueries {
             throw new Error(`unable to get popular products. Error: ${err}`);
         }
     }
+    async completedOrdersByUser(userId) {
+        try {
+            const conn = await database_1.default.connect();
+            const sql = 'SELECT * FROM orders WHERE user_id=($1) AND status=($2)';
+            const result = await conn.query(sql, [userId, 'completed']);
+            return result.rows;
+        }
+        catch (err) {
+            throw new Error(`unable to get completed orders by user. Error: ${err}`);
+        }
+    }
 }
 exports.DashboardQueries = DashboardQueries;

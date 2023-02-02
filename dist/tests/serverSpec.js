@@ -151,6 +151,14 @@ describe('products API response', () => {
         expect(res.text).toBe('Authentication invalid');
         expect(res.body.token).toBeUndefined();
     });
+    it('should return products by category when using dashboard endpoing', async () => {
+        const res = await (0, supertest_1.default)(server_1.default)
+            .post('/api/v1/dashboard/category_Products')
+            .send({ category: test_product_2.category })
+            .set('Authorization', `Bearer ${token}`);
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+    });
     it('should delete product at delete endpoint', async () => {
         const res = await (0, supertest_1.default)(server_1.default)
             .delete(url + '/4')
@@ -177,6 +185,13 @@ describe('orders API response', () => {
         token = res.body.token;
         user_logged_id = res.body.id;
     });
+    it('should return error if the status of the order created is anything other than pending and completed', async () => {
+        const res = await (0, supertest_1.default)(server_1.default)
+            .post(url)
+            .send({ status: 'whatever', user_id: user_logged_id })
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.statusCode).toBe(500);
+    });
     it('should create new order at post endpoint', async () => {
         const res = await (0, supertest_1.default)(server_1.default)
             .post(url)
@@ -186,9 +201,23 @@ describe('orders API response', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe('pending');
     });
+    it('should return error if user is trying to create an order while having an active order open', async () => {
+        const res = await (0, supertest_1.default)(server_1.default)
+            .post(url)
+            .send({ status: 'pending', user_id: user_logged_id })
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.statusCode).toBe(500);
+    });
     it('should get all orders at get order endpoint', async () => {
         const res = await (0, supertest_1.default)(server_1.default)
             .get(url)
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBeGreaterThan(0);
+    });
+    it('should get all orders from specific user at getOrders endpoint', async () => {
+        const res = await (0, supertest_1.default)(server_1.default)
+            .get(url + '/myorders')
             .set('Authorization', `Bearer ${token}`);
         expect(res.statusCode).toBe(200);
         expect(res.body.length).toBeGreaterThan(0);
@@ -207,6 +236,13 @@ describe('orders API response', () => {
             .set('Authorization', `Bearer ${token}`);
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toEqual('completed');
+    });
+    it('should return error if update order is not either pending or completed', async () => {
+        const res = await (0, supertest_1.default)(server_1.default)
+            .patch(url + `/${order_created_id}`)
+            .send({ status: 'not a correct option' })
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.statusCode).toBe(500);
     });
     it('should add product to order at add product endpoint', async () => {
         const res = await (0, supertest_1.default)(server_1.default)
@@ -232,5 +268,12 @@ describe('orders API response', () => {
         console.log(res.body);
         expect(res.statusCode).toBe(200);
         expect(res.body.length).toBeGreaterThan(0);
+    });
+    it('should return order with its products with endpoint', async () => {
+        const res = await (0, supertest_1.default)(server_1.default)
+            .get(url + `/order_products/${order_created_id}`)
+            .set('Authorization', `Bearer ${token}`);
+        console.log(res.body);
+        expect(res.status).toBe(200);
     });
 });

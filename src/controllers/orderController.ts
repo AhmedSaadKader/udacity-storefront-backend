@@ -17,6 +17,21 @@ export const getAllOrders = async (
   }
 };
 
+export const getUserOrders = async (
+  req: RequestAuth,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const get_user_orders = await order.getAllOrdersByUser(
+      req.user?.id as number
+    );
+    res.json(get_user_orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createOrder = async (
   req: RequestAuth,
   res: Response,
@@ -89,5 +104,22 @@ export const addProductToOrder = async (
     res.json(order_product);
   } catch (error) {
     next(error);
+  }
+};
+
+export const getOrderWithProducts = async (
+  req: RequestAuth,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const get_order = await order.show(req.params.orderId);
+    if ((req.user?.id as number) !== get_order.user_id) {
+      throw new Error('Unauthorized to view this order');
+    }
+    const ordersWithProducts = await order.orderWithProduct(req.params.orderId);
+    res.json(ordersWithProducts);
+  } catch (err) {
+    next(err);
   }
 };

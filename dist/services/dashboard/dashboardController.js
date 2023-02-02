@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.productsByCategory = exports.popular_products = exports.products_in_orders = void 0;
+exports.getCompletedOrdersByUser = exports.productsByCategory = exports.popular_products = exports.products_in_orders = void 0;
 const dashboard_1 = require("./dashboard");
 const Product_1 = require("../../models/Product");
 const dashboard = new dashboard_1.DashboardQueries();
@@ -35,3 +35,13 @@ const productsByCategory = async (req, res, next) => {
     }
 };
 exports.productsByCategory = productsByCategory;
+const getCompletedOrdersByUser = async (req, res, next) => {
+    try {
+        const completedOrders = await dashboard.completedOrdersByUser(req.user?.id);
+        res.json(completedOrders);
+    }
+    catch (err) {
+        next(err);
+    }
+};
+exports.getCompletedOrdersByUser = getCompletedOrdersByUser;

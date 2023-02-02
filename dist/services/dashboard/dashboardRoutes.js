@@ -10,5 +10,6 @@ const router = (0, express_1.Router)();
 router.use(auth_1.default);
 router.get('/products_in_orders', dashboardController_1.products_in_orders);
 router.get('/popular_products', dashboardController_1.popular_products);
-router.get('/category_Products', dashboardController_1.productsByCategory);
+router.post('/category_Products', dashboardController_1.productsByCategory);
+router.get('/completed_orders', dashboardController_1.getCompletedOrdersByUser);
 exports.default = router;

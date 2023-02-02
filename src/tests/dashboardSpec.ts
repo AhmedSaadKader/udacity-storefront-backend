@@ -39,4 +39,8 @@ describe('dashboard queries methods', () => {
     const result = await dashboard.productsInOrders();
     expect(result.length).toBeGreaterThanOrEqual(1);
   });
+  it('should return most popular products when using dashboard query', async () => {
+    const result = await dashboard.mostPopularProducts();
+    expect(result.length).toBeGreaterThanOrEqual(1);
+  });
 });

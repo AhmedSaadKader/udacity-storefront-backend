@@ -1,4 +1,5 @@
 import client from '../../database';
+import { Order } from '../../models/Order';
 
 export class DashboardQueries {
   async productsInOrders(): Promise<
@@ -28,6 +29,16 @@ export class DashboardQueries {
       return result.rows;
     } catch (err) {
       throw new Error(`unable to get popular products. Error: ${err}`);
+    }
+  }
+  async completedOrdersByUser(userId: string | number): Promise<Order[]> {
+    try {
+      const conn = await client.connect();
+      const sql = 'SELECT * FROM orders WHERE user_id=($1) AND status=($2)';
+      const result = await conn.query(sql, [userId, 'completed']);
+      return result.rows;
+    } catch (err) {
+      throw new Error(`unable to get completed orders by user. Error: ${err}`);
     }
   }
 }

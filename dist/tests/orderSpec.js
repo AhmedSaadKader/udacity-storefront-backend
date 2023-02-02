@@ -9,6 +9,7 @@ const product = new Product_1.ProductStore();
 let newOrder;
 describe('', () => {
     let order_user;
+    let newProduct;
     beforeAll(async () => {
         order_user = await user.create({
             first_name: 'order_test_first_name',
@@ -16,6 +17,7 @@ describe('', () => {
             username: 'order_test_user',
             password: 'order_test_password'
         });
+        newProduct = await product.create('order_test_product', 400, 'order_test_category', order_user.username);
     });
     it('should have an index method', () => {
         expect(order.index).toBeDefined();
@@ -39,8 +41,12 @@ describe('', () => {
     });
     it('should return list of all products with index method', async () => {
         const result = await order.index();
-        console.log(result);
         expect(result.length).toBeGreaterThanOrEqual(1);
+    });
+    it('should return all orders by specific user', async () => {
+        const result = await order.getAllOrdersByUser(order_user.id);
+        console.log(result);
+        expect(result.length).toBeGreaterThan(0);
     });
     it('should return specific order with show method', async () => {
         const result = await order.show(newOrder.id);
@@ -56,15 +62,14 @@ describe('', () => {
         });
     });
     it('should add product to order_product table with addProduct method', async () => {
-        const newProduct = await product.create('order_test_product', 400, 'order_test_category', order_user.username);
-        const result = await order.addProduct(5, 1, newProduct.id);
-        console.log(result);
-        expect(result.quantity).toEqual(5);
+        const result = await order.addProduct(15, 1, newProduct.id);
+        expect(result.quantity).toEqual(15);
         expect(result.order_id).toEqual(1);
         expect(result.product_id).toEqual(newProduct.id);
     });
-    //   it('should delete order with order method', async () => {
-    //     const result = await order.delete(1);
-    //     expect(result).toBeUndefined();
-    //   });
+    it('should get order with its products and quantity with orderWithProduct method', async () => {
+        const result = await order.orderWithProduct(1);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[1].product_id).toBe(newProduct.id);
+    });
 });

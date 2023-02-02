@@ -46,3 +46,18 @@ export const productsByCategory = async (
     next(err);
   }
 };
+
+export const getCompletedOrdersByUser = async (
+  req: RequestAuth,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const completedOrders = await dashboard.completedOrdersByUser(
+      req.user?.id as number
+    );
+    res.json(completedOrders);
+  } catch (err) {
+    next(err);
+  }
+};
